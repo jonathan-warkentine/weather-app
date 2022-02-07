@@ -1,0 +1,4 @@
+.search-history-item:hover {
+    color: blue;
+    cursor: pointer;
+}
