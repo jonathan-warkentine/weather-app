@@ -14,8 +14,18 @@
         <div class="jumbotron bg-dark text-light m-3">
             <h1>Weather App</h1>
         </div>
-        
-            <!-- Page Content -->
+            <div class="row m-3">
+                <div class="col-1">
+                    <label id="units-toggle" class="switch">
+                        <input type="checkbox">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+                <div class="col-3">
+                    <p id="units">Fahrenheit</p>
+                </div>     
+            </div>
+            <!-- Main Page Content -->
             <div class="row m-3">
 
                 <!-- The sidebar -->
@@ -34,14 +44,14 @@
                 
                 <!-- The Weather Forecast -->
                 <div class="col-9 card">
-                    <h2 id="cityName">
-                        City Name <span>(</span><span id="date"></span><span>)</span>
+                    <h2>
+                        <span id="cityName">City Name</span><span> (</span><span id="date"></span><span>)</span>
                     </h2>
-                    <ul id="weather-conditions">
-                        <li>Temperature: </li>
-                        <li>Wind: </li>
-                        <li>Humidity: </li>
-                        <li>UV Index: </li>
+                    <ul id="weather-conditions" class="list-group">
+                        <li class="list-group-item">Temperature: <span id="temperature"></span></li>
+                        <li class="list-group-item">Wind: <span id="wind"></span></li>
+                        <li class="list-group-item">Humidity: <span id="humidity"></span></li>
+                        <li class="list-group-item">UV Index: <span id="uv-index"></span></li>
 
                     </ul>
                 </div>
