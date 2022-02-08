@@ -19,10 +19,15 @@
 }
 
 #five-day-forecast{
-    display: inline;
+    display: flex;
+    flex-flow: nowrap;
+    justify-content: space-between;
 }
 
-
+#reportHeader{
+    padding-top: 18px;
+    padding-bottom: 5px;
+}
 
 
 

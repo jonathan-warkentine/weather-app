@@ -46,7 +46,7 @@
                 
                 <!-- The Weather Forecast -->
                 <div class="col-9 card">
-                    <h2>
+                    <h2 id="reportHeader">
                         <span id="cityName">City Name</span><span> (</span><span id="date"></span><span>)</span>
                     </h2>
                     <ul id="weather-conditions" class="list-group">
@@ -57,8 +57,20 @@
                         <li class="list-group-item">UV Index: <span id="uv-index"></span></li>
 
                     </ul>
-                    <ul id="five-day-forecast">
-                    </ul>
+
+                    <br>
+
+                    <div id="five-day-forecast" class="d-flex nowrap space-between p-0 m-0" >
+                        <div id="card-template" class="card bg-dark text-light" style="display: none;">
+                            <div class="card-body">
+                              <h4 class="card-title">Card title</h4>
+                              <img class="card-icon">
+                              <ul class="card-attributes" style="list-style: none; padding-left: 0;">
+                              </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
                 </div>
 
 

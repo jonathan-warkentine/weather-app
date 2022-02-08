@@ -29,7 +29,6 @@ $("#searchform").on("submit", function(event){
 });
 
 $("#recents").on("click", function(event) { // User selects city from recent search history
-    console.log(event.target.textContent);
     executeSearch(event.target.textContent);
     
     $("#cityName").text(event.target.textContent);
@@ -76,6 +75,7 @@ function executeSearch (searchKey) { // Listen for search submission, return wea
 function writeWeather (queryData) {
     console.log(queryData);
     
+    // Write the Main Weather Card with Current Weather
     $("#weatherIcon").attr("src", `http://openweathermap.org/img/wn/${queryData.daily[0].weather[0].icon}@2x.png`);
     $("figcaption").text(queryData.daily[0].weather[0].description);
     $("#temperature").text(`${Math.round(queryData.current.temp)}° ${$("#units").text()}`);
@@ -84,6 +84,30 @@ function writeWeather (queryData) {
     $("#uv-index").text(queryData.current.uvi);
     uvColorCode($("#uv-index"), queryData.current.uvi)
 
+    // Write the 5 Day Forecast
+    // removeChildNodes(document.querySelector("#five-day-forecast"));
+    for (let i=1; i<6; i++){
+        let forecastDayCardEl = $("#card-template").clone();
+        forecastDayCardEl.attr("style", "display: inline-block;");
+        forecastDayCardEl.find(".card-title").text(moment.unix(queryData.daily[i].dt).format("MMM Do"));
+        
+        forecastDayCardEl.find(".card-attributes").append();
+        let newListItemEl = document.createElement("li");
+        newListItemEl.textContent = `${Math.round(queryData.daily[i].temp.day)}° ${$("#units").text()}`;
+        forecastDayCardEl.find(".card-attributes").append(newListItemEl);
+
+        newListItemEl = document.createElement("li");
+        newListItemEl.textContent = `Wind: ${queryData.daily[i].wind_speed} ${$("#speedUnits").text()}`;
+        forecastDayCardEl.find(".card-attributes").append(newListItemEl);
+
+        newListItemEl = document.createElement("li");
+        newListItemEl.textContent = `Humidity: ${queryData.daily[i].humidity}%`;
+        forecastDayCardEl.find(".card-attributes").append(newListItemEl);
+
+        forecastDayCardEl.find(".card-icon").attr("src", `http://openweathermap.org/img/wn/${queryData.daily[i].weather[0].icon}@2x.png`);
+        
+        $("#five-day-forecast").append(forecastDayCardEl);
+    }
 }
 
 function writeSearchesFromHistory(searchedCities) { // Populates Recent Searches to Screen
