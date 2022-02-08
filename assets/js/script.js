@@ -1,24 +1,6 @@
 setupPage();
 
 
-// P A G E     S E T U P
-function setupPage () {
-    $("#date").text(moment().format("MMM Do, YYYY"));
-    $("#units").val("imperial"); // Sets the default temperature units to Fahrenheit
-
-    if (!localStorage.getItem("searchedCities")) { // In the absence of user data, provides a default list of searched cities
-        localStorage.setItem("searchedCities", JSON.stringify(["Atlanta", "Denver", "New York City", "Houston"]));
-    }
-
-    writeSearchesFromHistory(JSON.parse(localStorage.getItem("searchedCities")));
-    
-    mostRecentSearch = JSON.parse(localStorage.getItem("searchedCities"));
-    mostRecentSearch = mostRecentSearch[0];
-    executeSearch(mostRecentSearch);
-}
-
-
-
 /* U S E R      E V E N T S */
 $("#searchform").on("submit", function(event){
     event.preventDefault();
@@ -44,6 +26,21 @@ $("#units-toggle").on("click", function(event){
 
 
 /* F U N C T I O N S */
+
+function setupPage () {
+    $("#date").text(moment().format("MMM Do, YYYY"));
+    $("#units").val("imperial"); // Sets the default temperature units to Fahrenheit
+
+    if (!localStorage.getItem("searchedCities")) { // In the absence of user data, provides a default list of searched cities
+        localStorage.setItem("searchedCities", JSON.stringify(["Atlanta", "Denver", "New York City", "Houston"]));
+    }
+
+    writeSearchesFromHistory(JSON.parse(localStorage.getItem("searchedCities")));
+    
+    mostRecentSearch = JSON.parse(localStorage.getItem("searchedCities"));
+    mostRecentSearch = mostRecentSearch[0];
+    executeSearch(mostRecentSearch);
+}
 
 function executeSearch (searchKey) { // Listen for search submission, return weather
     
