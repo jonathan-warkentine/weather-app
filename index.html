@@ -12,24 +12,15 @@
     <main class="container-fluid">
         
         <div class="jumbotron bg-dark text-light m-3">
-            <h1>Weather App</h1>
+            <h1 class="display-3">Weather App</h1>
         </div>
-            <div class="row m-3">
-                <div class="col-1">
-                    <label id="units-toggle" class="switch">
-                        <input type="checkbox">
-                        <span class="slider round"></span>
-                    </label>
-                </div>
-                <div class="col-3">
-                    <p id="units">Fahrenheit</p>
-                </div>     
-            </div>
+            
             <!-- Main Page Content -->
             <div class="row m-3">
 
                 <!-- The sidebar -->
                 <div class="col-3 pl-0">
+                    
                     <form id="searchform" class="d-flex nowrap">
                         <input id="searchbar" type="search" class="form-control" placeholder="Search for a City">
                         <!-- create a space between search field and search btn -->
@@ -37,6 +28,17 @@
                         <button type="submit" class="btn btn-primary">Search</button>
                     </form>
                     <br>
+                        <div class="d-flex nowrap justify-content-around align-items-center border bg-light p-3">
+                            <div>
+                                <label  class="switch">
+                                    <input id="units-toggle" type="checkbox">
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                            <div class="ml-3">
+                                <span id="units">Fahrenheit</span>
+                            </div>
+                        </div>
                     <ul id="recents" class="list-group">
                         <!-- js to populate -->
                     </ul>
@@ -48,11 +50,14 @@
                         <span id="cityName">City Name</span><span> (</span><span id="date"></span><span>)</span>
                     </h2>
                     <ul id="weather-conditions" class="list-group">
+                        <li id="weatherSummary"><img id="weatherIcon" src=""></img><figcaption></figcaption></li>
                         <li class="list-group-item">Temperature: <span id="temperature"></span></li>
-                        <li class="list-group-item">Wind: <span id="wind"></span></li>
-                        <li class="list-group-item">Humidity: <span id="humidity"></span></li>
+                        <li class="list-group-item">Wind Speed: <span id="windSpeed"></span> <span id="speedUnits">mph</span></li>
+                        <li class="list-group-item">Humidity: <span id="humidity"></span>%</li>
                         <li class="list-group-item">UV Index: <span id="uv-index"></span></li>
 
+                    </ul>
+                    <ul id="five-day-forecast">
                     </ul>
                 </div>
 

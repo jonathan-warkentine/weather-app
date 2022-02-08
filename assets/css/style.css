@@ -3,6 +3,29 @@
     cursor: pointer;
 }
 
+#weatherSummary{
+    list-style: none; 
+    display: flex; 
+    flex-flow: nowrap; 
+    align-items: center;
+}
+
+#uv-index{
+    color: white;
+    padding: 3px;
+    padding-left: 11px;
+    padding-right: 11px;
+    border-radius: 5px;
+}
+
+#five-day-forecast{
+    display: inline;
+}
+
+
+
+
+
 /* U N I T     T O G G L E    E L E M E N T */
     /* The switch - the box around the slider */
     .switch {
@@ -27,7 +50,7 @@
         left: 0;
         right: 0;
         bottom: 0;
-        background-color: #ccc;
+        background-color: #2196F3;
         -webkit-transition: .4s;
         transition: .4s;
     }
@@ -45,7 +68,7 @@
     }
     
     input:checked + .slider {
-        background-color: #2196F3;
+        background-color: black;
     }
     
     input:focus + .slider {
