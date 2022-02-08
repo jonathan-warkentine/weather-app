@@ -98,7 +98,7 @@ function writeWeather (queryData) {
         forecastDayCardEl.find(".card-attributes").append(newListItemEl);
 
         newListItemEl = document.createElement("li");
-        newListItemEl.textContent = `Wind: ${queryData.daily[i].wind_speed} ${$("#speedUnits").text()}`;
+        newListItemEl.textContent = `Wind: ${Math.round(queryData.daily[i].wind_speed)} ${$("#speedUnits").text()}`;
         forecastDayCardEl.find(".card-attributes").append(newListItemEl);
 
         newListItemEl = document.createElement("li");
