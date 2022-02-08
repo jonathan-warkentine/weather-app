@@ -22,13 +22,18 @@
             <!-- Main Page Content -->
             <div class="row m-3">
 
-                <!-- The sidebar -->
+                <!-- The Sidebar -->
                 <div class="col-3 pl-0">
                     
+                    <!-- The search bar -->
                     <form id="searchform" class="d-flex nowrap">
-                        <input id="searchbar" type="text" class="form-control" placeholder="Search for a City">
+                        <input id="searchbar" autocomplete="off" list="city-list" type="text" class="form-control" placeholder="Search for a City">
+                        <datalist id="city-list">
+                            <!-- <option value="San Francisco"> -->
+                          </datalist>
                         <!-- create a space between search field and search btn -->
                         <span class="col p-1"></span> 
+                        
                         <button type="submit" class="btn btn-primary">Search</button>
                     </form>
                     <br>

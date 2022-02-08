@@ -1,19 +1,16 @@
 setupPage();
 
-
 /* U S E R      E V E N T S */
-$("#searchform").on("submit", function(event){
-    event.preventDefault();
-    saveSearch($("#searchbar").val()); // Before executing search, saves query to local storage
-    
-
-    executeSearch($("#searchbar").val()); // Executes user search event
+$("#searchform").on("submit", function(event){ // User submits a search
+    event.preventDefault(); // Prevent page reload
+    saveLocally("searchedCities", $("#searchbar").val(), false); // Before executing search, saves query to local storage
+    fetchWeatherData($("#searchbar").val()); // Executes user search event
 });
 
 $("#recents").on("click", "span", function(event) { // User selects city from recent search history
     event.stopPropagation();
     
-    executeSearch(event.target.textContent);
+    fetchWeatherData(event.target.textContent);
     
     $("#cityName").text(event.target.textContent);
 });
@@ -26,29 +23,44 @@ $("#recents").on("click", "li", function(event) { // User selects city from rece
 $("#units-toggle").on("click", function(event){
     event.stopPropagation();
     toggleUnits();
+    refreshPage();
 });
 
 
 /* F U N C T I O N S */
-
 function setupPage () {
     $("#date").text(moment().format("MMM Do, YYYY"));
     $("#units").val("imperial"); // Sets the default temperature units to Fahrenheit
 
-    if (!localStorage.getItem("searchedCities")) { // In the absence of user data, provides a default list of searched cities
-        localStorage.setItem("searchedCities", JSON.stringify(["Atlanta", "Denver", "New York City", "Houston"]));
-    }
-
-    writeSearchesFromHistory(JSON.parse(localStorage.getItem("searchedCities")));
+    saveLocally("searchedCities", retrieveLocal("searchedCities") || ["Atlanta", "Denver", "New York City", "Houston"], true);
     
-    mostRecentSearch = JSON.parse(localStorage.getItem("searchedCities"));
-    mostRecentSearch = mostRecentSearch[0];
-    executeSearch(mostRecentSearch);
+    writePreviousSearches (retrieveLocal("searchedCities"));
+    fetchWeatherData(retrieveLocal("searchedCities", 0));
 }
 
-function executeSearch (searchKey) { // Listen for search submission, return weather
-    
-    $("#cityName").text(searchKey);
+function writePreviousSearches (searchedCities) { // Populates Recent Searches to Screen
+    removeChildNodes(document.querySelector("#recents"), 0); //removes all existing list items in order to start over
+    for (let i=0; i<searchedCities.length; i++) { 
+        
+        let newCityEl = document.createElement("span");
+        let closeEl = document.createElement("li");
+        
+        newCityEl.textContent = searchedCities[i];
+
+
+        closeEl.textContent = "x";
+        closeEl.setAttribute("class", "list-group-item search-history-item");
+        closeEl.setAttribute("style", "display: flex; flex-flow: row-reverse nowrap; justify-content: space-between;");
+        
+        closeEl.appendChild(newCityEl);
+
+        $("#recents").append(closeEl);
+    }
+}
+
+function fetchWeatherData (searchKey) { // Listen for search submission, return weather
+
+    $("#cityName").text(searchKey); // Write the queried city name to the header
 
     // Uses the OpenWeather Geocoding API to fetch lattitude and longitude for a given city name (https://openweathermap.org/api/geocoding-api)
     fetch(`http://api.openweathermap.org/geo/1.0/direct?q=${searchKey}&limit=1&appid=964a555e6e9097dea02c021683c83267`) 
@@ -67,10 +79,7 @@ function executeSearch (searchKey) { // Listen for search submission, return wea
         .then(function (data) {
             writeWeather(data);
         })
-        
-        
     });
-
 }
 
 function writeWeather (queryData) {
@@ -111,34 +120,9 @@ function writeWeather (queryData) {
     }
 }
 
-function writeSearchesFromHistory(searchedCities) { // Populates Recent Searches to Screen
-    removeChildNodes(document.querySelector("#recents"), 0); //removes all existing list items in order to start over
-    for (let i=0; i<searchedCities.length; i++) { 
-        
-        let newCityEl = document.createElement("span");
-        let closeEl = document.createElement("li");
-        
-        newCityEl.textContent = searchedCities[i];
-
-
-        closeEl.textContent = "x";
-        closeEl.setAttribute("class", "list-group-item search-history-item");
-        closeEl.setAttribute("style", "display: flex; flex-flow: row-reverse nowrap; justify-content: space-between;");
-        
-        closeEl.appendChild(newCityEl);
-
-        $("#recents").append(closeEl);
-    }
-}
-
-function saveSearch(searchText){ // Take a single parameter, "searchText", and unshifts to localStorage list of user searches 
-    
-    let currentLocalStorage = JSON.parse(localStorage.getItem("searchedCities"));
-    currentLocalStorage.unshift(searchText); // updates search history to the currentLocalStorage variable
-    writeSearchesFromHistory(currentLocalStorage); //repopulates page with updated search history
-    
-    localStorage.setItem("searchedCities", JSON.stringify(currentLocalStorage)); //saves updated search history to local storage
-
+function refreshPage () {
+    writePreviousSearches (JSON.parse(localStorage.getItem("searchedCities")));
+    fetchWeatherData($("#cityName").text());
 }
 
 function toggleUnits(){
@@ -152,19 +136,6 @@ function toggleUnits(){
         $("#units").val("metric");
         $("#speedUnits").text("m/s");
     }
-
-    executeSearch($("#cityName").text());
-}
-
-function removeChildNodes(parentEl, indexStart){ //Deletes all children of the provided element, starting with the last element, until the provided number of elements remain
-    
-    while (parentEl.childNodes.length > indexStart) {
-        parentEl.removeChild(parentEl.lastChild);
-    }
-    
-    // for (let i=indexStart; i<parentEl.childNodes.length; i++) {
-    //     parentEl.removeChild(parentEl.lastChild);
-    // }
 }
 
 function uvColorCode (uvIndexEl, uv_index){ // Severity guide and colors sourced from the AT Melanoma Foundation: https://www.aimatmelanoma.org/melanoma-101/prevention/what-is-ultraviolet-uv-radiation/#:~:text=UV%20Index%200%2D2%20means,harm%20from%20unprotected%20sun%20exposure.
@@ -185,10 +156,36 @@ function uvColorCode (uvIndexEl, uv_index){ // Severity guide and colors sourced
     }
 }
 
+// UTILITY FUNCTIONS
+function saveLocally (varName, varValue, override){ 
+    if (override) {
+        localStorage.setItem(varName, JSON.stringify(varValue));
+    }
+    else {
+        let currentLocalStorage = JSON.parse(localStorage.getItem(varName)) || [];
+        currentLocalStorage.unshift(varValue);  
+        localStorage.setItem(varName, JSON.stringify(currentLocalStorage));
+    }
+}
 
-/* JQuery Autocomplete */
+function retrieveLocal(varName, index){
+    let localItem = JSON.parse(localStorage.getItem(varName));
+    if (index != null) {
+        return localItem[index];
+    }
+    else {
+        return localItem;
+    }
+}
+
+function removeChildNodes(parentEl, indexStart){ //Deletes all children of the provided element, starting with the last element, until the provided number of elements remain
+    while (parentEl.childNodes.length > indexStart) {
+        parentEl.removeChild(parentEl.lastChild);
+    }
+}
 
 
+/* JQuery Autocomplete Widget*/
 $(function () {
     var cityNames = [
         "Kabul",
@@ -386,10 +383,10 @@ $(function () {
         "Hanoi",
         "Sanaa",
         "Lusaka",
-        "Harare"
+        "Harare",
+        "Aberdeen", "Abilene", "Akron", "Albany", "Albuquerque", "Alexandria", "Allentown", "Amarillo", "Anaheim", "Anchorage", "Ann Arbor", "Antioch", "Apple Valley", "Appleton", "Arlington", "Arvada", "Asheville", "Athens", "Atlanta", "Atlantic City", "Augusta", "Aurora", "Austin", "Bakersfield", "Baltimore", "Barnstable", "Baton Rouge", "Beaumont", "Bel Air", "Bellevue", "Berkeley", "Bethlehem", "Billings", "Birmingham", "Bloomington", "Boise", "Boise City", "Bonita Springs", "Boston", "Boulder", "Bradenton", "Bremerton", "Bridgeport", "Brighton", "Brownsville", "Bryan", "Buffalo", "Burbank", "Burlington", "Cambridge", "Canton", "Cape Coral", "Carrollton", "Cary", "Cathedral City", "Cedar Rapids", "Champaign", "Chandler", "Charleston", "Charlotte", "Chattanooga", "Chesapeake", "Chicago", "Chula Vista", "Cincinnati", "Clarke County", "Clarksville", "Clearwater", "Cleveland", "College Station", "Colorado Springs", "Columbia", "Columbus", "Concord", "Coral Springs", "Corona", "Corpus Christi", "Costa Mesa", "Dallas", "Daly City", "Danbury", "Davenport", "Davidson County", "Dayton", "Daytona Beach", "Deltona", "Denton", "Denver", "Des Moines", "Detroit", "Downey", "Duluth", "Durham", "El Monte", "El Paso", "Elizabeth", "Elk Grove", "Elkhart", "Erie", "Escondido", "Eugene", "Evansville", "Fairfield", "Fargo", "Fayetteville", "Fitchburg", "Flint", "Fontana", "Fort Collins", "Fort Lauderdale", "Fort Smith", "Fort Walton Beach", "Fort Wayne", "Fort Worth", "Frederick", "Fremont", "Fresno", "Fullerton", "Gainesville", "Garden Grove", "Garland", "Gastonia", "Gilbert", "Glendale", "Grand Prairie", "Grand Rapids", "Grayslake", "Green Bay", "GreenBay", "Greensboro", "Greenville", "Gulfport-Biloxi", "Hagerstown", "Hampton", "Harlingen", "Harrisburg", "Hartford", "Havre de Grace", "Hayward", "Hemet", "Henderson", "Hesperia", "Hialeah", "Hickory", "High Point", "Hollywood", "Honolulu", "Houma", "Houston", "Howell", "Huntington", "Huntington Beach", "Huntsville", "Independence", "Indianapolis", "Inglewood", "Irvine", "Irving", "Jackson", "Jacksonville", "Jefferson", "Jersey City", "Johnson City", "Joliet", "Kailua", "Kalamazoo", "Kaneohe", "Kansas City", "Kennewick", "Kenosha", "Killeen", "Kissimmee", "Knoxville", "Lacey", "Lafayette", "Lake Charles", "Lakeland", "Lakewood", "Lancaster", "Lansing", "Laredo", "Las Cruces", "Las Vegas", "Layton", "Leominster", "Lewisville", "Lexington", "Lincoln", "Little Rock", "Long Beach", "Lorain", "Los Angeles", "Louisville", "Lowell", "Lubbock", "Macon", "Madison", "Manchester", "Marina", "Marysville", "McAllen", "McHenry", "Medford", "Melbourne", "Memphis", "Merced", "Mesa", "Mesquite", "Miami", "Milwaukee", "Minneapolis", "Miramar", "Mission Viejo", "Mobile", "Modesto", "Monroe", "Monterey", "Montgomery", "Moreno Valley", "Murfreesboro", "Murrieta", "Muskegon", "Myrtle Beach", "Naperville", "Naples", "Nashua", "Nashville", "New Bedford", "New Haven", "New London", "New Orleans", "New York", "New York City", "Newark", "Newburgh", "Newport News", "Norfolk", "Normal", "Norman", "North Charleston", "North Las Vegas", "North Port", "Norwalk", "Norwich", "Oakland", "Ocala", "Oceanside", "Odessa", "Ogden", "Oklahoma City", "Olathe", "Olympia", "Omaha", "Ontario", "Orange", "Orem", "Orlando", "Overland Park", "Oxnard", "Palm Bay", "Palm Springs", "Palmdale", "Panama City", "Pasadena", "Paterson", "Pembroke Pines", "Pensacola", "Peoria", "Philadelphia", "Phoenix", "Pittsburgh", "Plano", "Pomona", "Pompano Beach", "Port Arthur", "Port Orange", "Port Saint Lucie", "Port St. Lucie", "Portland", "Portsmouth", "Poughkeepsie", "Providence", "Provo", "Pueblo", "Punta Gorda", "Racine", "Raleigh", "Rancho Cucamonga", "Reading", "Redding", "Reno", "Richland", "Richmond", "Richmond County", "Riverside", "Roanoke", "Rochester", "Rockford", "Roseville", "Round Lake Beach", "Sacramento", "Saginaw", "Saint Louis", "Saint Paul", "Saint Petersburg", "Salem", "Salinas", "Salt Lake City", "San Antonio", "San Bernardino", "San Buenaventura", "San Diego", "San Francisco", "San Jose", "Santa Ana", "Santa Barbara", "Santa Clara", "Santa Clarita", "Santa Cruz", "Santa Maria", "Santa Rosa", "Sarasota", "Savannah", "Scottsdale", "Scranton", "Seaside", "Seattle", "Sebastian", "Shreveport", "Simi Valley", "Sioux City", "Sioux Falls", "South Bend", "South Lyon", "Spartanburg", "Spokane", "Springdale", "Springfield", "St. Louis", "St. Paul", "St. Petersburg", "Stamford", "Sterling Heights", "Stockton", "Sunnyvale", "Syracuse", "Tacoma", "Tallahassee", "Tampa", "Temecula", "Tempe", "Thornton", "Thousand Oaks", "Toledo", "Topeka", "Torrance", "Trenton", "Tucson", "Tulsa", "Tuscaloosa", "Tyler", "Utica", "Vallejo", "Vancouver", "Vero Beach", "Victorville", "Virginia Beach", "Visalia", "Waco", "Warren", "Washington", "Waterbury", "Waterloo", "West Covina", "West Valley City", "Westminster", "Wichita", "Wilmington", "Winston", "Winter Haven", "Worcester", "Yakima", "Yonkers", "York", "Youngstown"
     ];
     $('#searchbar').autocomplete({
       source: cityNames,
     });
   });
- 
