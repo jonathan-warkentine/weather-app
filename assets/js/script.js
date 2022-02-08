@@ -10,19 +10,23 @@ $("#searchform").on("submit", function(event){
     executeSearch($("#searchbar").val()); // Executes user search event
 });
 
-$("#recents").on("click", function(event) { // User selects city from recent search history
+$("#recents").on("click", "span", function(event) { // User selects city from recent search history
+    event.stopPropagation();
+    
     executeSearch(event.target.textContent);
     
     $("#cityName").text(event.target.textContent);
+});
+
+$("#recents").on("click", "li", function(event) { // User selects city from recent search history
+    event.target.remove();
+
 });
 
 $("#units-toggle").on("click", function(event){
     event.stopPropagation();
     toggleUnits();
 });
-
-
-
 
 
 /* F U N C T I O N S */
@@ -110,11 +114,20 @@ function writeWeather (queryData) {
 function writeSearchesFromHistory(searchedCities) { // Populates Recent Searches to Screen
     removeChildNodes(document.querySelector("#recents"), 0); //removes all existing list items in order to start over
     for (let i=0; i<searchedCities.length; i++) { 
-        let newCityEl = document.createElement("li");
-        newCityEl.setAttribute("class", "list-group-item search-history-item");
+        
+        let newCityEl = document.createElement("span");
+        let closeEl = document.createElement("li");
+        
         newCityEl.textContent = searchedCities[i];
 
-        $("#recents").append(newCityEl);
+
+        closeEl.textContent = "x";
+        closeEl.setAttribute("class", "list-group-item search-history-item");
+        closeEl.setAttribute("style", "display: flex; flex-flow: row-reverse nowrap; justify-content: space-between;");
+        
+        closeEl.appendChild(newCityEl);
+
+        $("#recents").append(closeEl);
     }
 }
 
@@ -171,3 +184,212 @@ function uvColorCode (uvIndexEl, uv_index){ // Severity guide and colors sourced
         uvIndexEl.attr("style", "background-color: #6b49c8;");
     }
 }
+
+
+/* JQuery Autocomplete */
+
+
+$(function () {
+    var cityNames = [
+        "Kabul",
+        "Tirane",
+        "Algiers",
+        "Andorra la vella",
+        "Luanda",
+        "Saint john's",
+        "Buenos aires",
+        "Yerevan",
+        "Canberra",
+        "Vienna",
+        "Baku",
+        "Nassau",
+        "Manama",
+        "Dhaka",
+        "Bridgetown",
+        "Minsk",
+        "Brussels",
+        "Belmopan",
+        "Porto-novo",
+        "Thimphu",
+        "La paz, sucre",
+        "Sarajevo",
+        "Gaborone",
+        "Brasilia",
+        "Bandar seri begawan",
+        "Sofia",
+        "Ouagadougou",
+        "Bujumbura",
+        "Phnom penh",
+        "Yaounde",
+        "Ottawa",
+        "Praia",
+        "Bangui",
+        "N'djamena",
+        "Santiago",
+        "Beijing",
+        "Bogota",
+        "Moron",
+        "Kinshasa",
+        "Brazzaville",
+        "San jose",
+        "Yamoussoukro, abidjan",
+        "Zagreb",
+        "Havana",
+        "Nicosia",
+        "Prague",
+        "Copenhagen",
+        "Djibouti",
+        "Rosesau",
+        "Santo domingo",
+        "Dilli",
+        "Quito",
+        "Cairo",
+        "San salvador",
+        "Malabo",
+        "Asmara",
+        "Tallinn",
+        "Addis ababa",
+        "Suva",
+        "Helsinki",
+        "Paris",
+        "Libreville",
+        "Banjul",
+        "Tbilisi",
+        "Berlin",
+        "Accra",
+        "Athens",
+        "St. george's",
+        "Guatemala city",
+        "Conakry",
+        "Bissau",
+        "Georgetown",
+        "Port-au-prince",
+        "Tegucigalpa",
+        "Budapest",
+        "Reykjavik",
+        "New delhi",
+        "Jakarta",
+        "Tehran",
+        "Baghdad",
+        "Dublin",
+        "Jerusalem",
+        "Rome",
+        "Kingston",
+        "Tokyo",
+        "Amman",
+        "Astana",
+        "Nairobi",
+        "Tarawa atoll",
+        "Pyongyang",
+        "Seoul",
+        "Pristina",
+        "Kuwait city",
+        "Bishkek",
+        "Vientiane",
+        "Riga",
+        "Beirut",
+        "Maseru",
+        "Monrovia",
+        "Tripoli",
+        "Vaduz",
+        "Vilnius",
+        "Luxembourg",
+        "Skopje",
+        "Antananarivo",
+        "Lilongwe",
+        "Kuala lumpur",
+        "Male",
+        "Bamako",
+        "Valletta",
+        "Majuro",
+        "Nouakchott",
+        "Port louis",
+        "Mexico city",
+        "Palikir",
+        "Chisinau",
+        "Monaco",
+        "Ulaanbaatar",
+        "Podgorica",
+        "Rabat",
+        "Maputo",
+        "Nypyidaw",
+        "Windhoek",
+        "Yaren",
+        "Kathmandu",
+        "Amsterdam, the hague",
+        "Wellington",
+        "Managua",
+        "Niamey",
+        "Abuja",
+        "Oslo",
+        "Muscat",
+        "Islamabad",
+        "Melekeok",
+        "Panama city",
+        "Port moresby papa",
+        "Asuncion",
+        "Lima",
+        "Manila",
+        "Warsaw",
+        "Lisbon",
+        "Doha",
+        "Bucharest",
+        "Moscow",
+        "Kigali",
+        "Basseterre",
+        "Castries",
+        "Kingstown east",
+        "Apia",
+        "San marino",
+        "Sao tome",
+        "Riyadh",
+        "Dakar",
+        "Belgrade",
+        "Victoria",
+        "Freetown",
+        "Singapore",
+        "Bratislava",
+        "Ljubljana",
+        "Honiara",
+        "Mogadishu",
+        "Pretoria, cape town,bloemfontein",
+        "Juba",
+        "Madrid",
+        "Colombo",
+        "Khartoum",
+        "Paramaribo",
+        "Mbabane",
+        "Stockholm",
+        "Berne",
+        "Damascus",
+        "Taipei",
+        "Dushanbe",
+        "Dar es salaam, dodoma",
+        "Bangkok",
+        "Lome",
+        "Nuku'alofa",
+        "Port-of-spain",
+        "Tunis",
+        "Ankara",
+        "Ashgabat",
+        "Vaiaku",
+        "Kampala",
+        "Kiev",
+        "Abu dhabi",
+        "London",
+        "Washington d.c.",
+        "Montevideo",
+        "Tashkent",
+        "Port-vila",
+        "Vatican city",
+        "Caracas",
+        "Hanoi",
+        "Sanaa",
+        "Lusaka",
+        "Harare"
+    ];
+    $('#searchbar').autocomplete({
+      source: cityNames,
+    });
+  });
+ 
