@@ -85,7 +85,7 @@ function writeWeather (queryData) {
     uvColorCode($("#uv-index"), queryData.current.uvi)
 
     // Write the 5 Day Forecast
-    // removeChildNodes(document.querySelector("#five-day-forecast"));
+    removeChildNodes(document.querySelector("#five-day-forecast"), 2);
     for (let i=1; i<6; i++){
         let forecastDayCardEl = $("#card-template").clone();
         forecastDayCardEl.attr("style", "display: inline-block;");
@@ -111,7 +111,7 @@ function writeWeather (queryData) {
 }
 
 function writeSearchesFromHistory(searchedCities) { // Populates Recent Searches to Screen
-    removeChildNodes(document.querySelector("#recents")); //removes all existing list items in order to start over
+    removeChildNodes(document.querySelector("#recents"), 0); //removes all existing list items in order to start over
     for (let i=0; i<searchedCities.length; i++) { 
         let newCityEl = document.createElement("li");
         newCityEl.setAttribute("class", "list-group-item search-history-item");
@@ -146,10 +146,15 @@ function toggleUnits(){
     executeSearch($("#cityName").text());
 }
 
-function removeChildNodes(parentEl){ //Deletes all children of the provided element
-    while (parentEl.firstChild) {
-        parentEl.removeChild(parentEl.firstChild);
+function removeChildNodes(parentEl, indexStart){ //Deletes all children of the provided element, starting with the last element, until the provided number of elements remain
+    
+    while (parentEl.childNodes.length > indexStart) {
+        parentEl.removeChild(parentEl.lastChild);
     }
+    
+    // for (let i=indexStart; i<parentEl.childNodes.length; i++) {
+    //     parentEl.removeChild(parentEl.lastChild);
+    // }
 }
 
 function uvColorCode (uvIndexEl, uv_index){ // Severity guide and colors sourced from the AT Melanoma Foundation: https://www.aimatmelanoma.org/melanoma-101/prevention/what-is-ultraviolet-uv-radiation/#:~:text=UV%20Index%200%2D2%20means,harm%20from%20unprotected%20sun%20exposure.
