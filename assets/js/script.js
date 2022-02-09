@@ -55,7 +55,7 @@ function fetchWeatherData (searchKey) { // Listen for search submission, return 
     $("#cityName").text(searchKey); // Write the queried city name to the header
 
     // Uses the OpenWeather Geocoding API to fetch lattitude and longitude for a given city name (https://openweathermap.org/api/geocoding-api)
-    fetch(`http://api.openweathermap.org/geo/1.0/direct?q=${searchKey}&limit=1&appid=${token}`) 
+    fetch(`https://api.openweathermap.org/geo/1.0/direct?q=${searchKey}&limit=1&appid=${token}`) 
     .then(function (response) {
         return response.json();
     })
