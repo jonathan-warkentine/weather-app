@@ -12,64 +12,70 @@
     <title>Weather App</title>
 </head>
 <body>
-    <input class="container-fluid">
         
-        <div class="jumbotron bg-dark text-light m-3 d-flex nowrap align-items-center">
+        <header class="jumbotron bg-dark text-light m-3 d-flex nowrap align-items-center">
             <img class="rounded d-block pr-5" src="./assets/images/sun_icon.png">
             <h1 class="display-1">Weather App</h1>
-        </div>
+        </header>
         
-            <!-- Main Page Content -->
-            <div class="row m-3">
+        <!-- Main Page Content -->
+        <main class="container-fluid">
+            <div class="row pr-3">
 
                 <!-- The Sidebar -->
-                <div class="col-3 pl-0">
+                <div class="col-md-3">
                     
                     <!-- The search bar -->
                     <form id="searchform" class="d-flex nowrap">
-                        <input id="searchbar" autocomplete="off" list="city-list" type="text" class="form-control" placeholder="Search for a City">
-                        <datalist id="city-list">
-                            <!-- <option value="San Francisco"> -->
-                          </datalist>
+                        <input id="searchbar" autocomplete="off" type="text" class="form-control" placeholder="Search for a City">
                         <!-- create a space between search field and search btn -->
                         <span class="col p-1"></span> 
                         
                         <button type="submit" class="btn btn-primary">Search</button>
                     </form>
+
                     <br>
-                        <div class="d-flex nowrap justify-content-around align-items-center border bg-light p-3">
-                            <div>
-                                <label  class="switch">
-                                    <input id="units-toggle" type="checkbox">
-                                    <span class="slider round"></span>
-                                </label>
-                            </div>
-                            <div class="ml-3">
-                                <span id="units">Fahrenheit</span>
-                            </div>
+                    <div class="d-flex nowrap justify-content-around align-items-center border bg-light p-3">
+                            
+                        <!-- The Imperial/Metric Toggle -->
+                        <div>
+                            <label  class="switch">
+                                <input id="units-toggle" type="checkbox">
+                                <span class="slider round"></span>
+                            </label>
                         </div>
+                        <div class="ml-3">
+                            <span id="units">Fahrenheit</span>
+                        </div>
+                    </div>
+                    
+                    <!-- recent searches list -->
                     <ul id="recents" class="list-group">
-                        <!-- js to populate -->
+                    <!-- js to populate -->
                     </ul>
                 </div>
                 
                 <!-- The Weather Forecast -->
-                <div class="col-9 card">
-                    <h2 id="reportHeader">
-                        <span id="cityName">City Name</span><span> (</span><span id="date"></span><span>)</span>
-                    </h2>
-                    <ul id="weather-conditions" class="list-group">
-                        <li id="weatherSummary"><img id="weatherIcon" src=""></img><figcaption></figcaption></li>
-                        <li class="list-group-item">Temperature: <span id="temperature"></span></li>
-                        <li class="list-group-item">Wind Speed: <span id="windSpeed"></span> <span id="speedUnits">mph</span></li>
-                        <li class="list-group-item">Humidity: <span id="humidity"></span>%</li>
-                        <li class="list-group-item">UV Index: <span id="uv-index"></span></li>
+                <div class="col-md-9 card">
+                    <div class="row">
+                        <div class="col-12">
+                            <h2 id="reportHeader">
+                                <span id="cityName">City Name</span><span> (</span><span id="date"></span><span>)</span>
+                            </h2>
+                            <ul id="weather-conditions" class="list-group">
+                                <li id="weatherSummary"><img id="weatherIcon" src=""></img><figcaption></figcaption></li>
+                                <li class="list-group-item">Temperature: <span id="temperature"></span></li>
+                                <li class="list-group-item">Wind Speed: <span id="windSpeed"></span> <span id="speedUnits">mph</span></li>
+                                <li class="list-group-item">Humidity: <span id="humidity"></span>%</li>
+                                <li class="list-group-item">UV Index: <span id="uv-index"></span></li>
 
-                    </ul>
+                            </ul>
 
-                    <br>
+                            <br>
+                        </div>
+                    </div>
 
-                    <div id="five-day-forecast" class="row d-flex space-between p-0 m-0">
+                    <div id="five-day-forecast" class="row p-0 m-0">
                         <div id="card-template" class="col card bg-dark text-light mr-3" style="display: none;">
                             <div class="card-body">
                               <h4 class="card-title">Card title</h4>
@@ -85,7 +91,7 @@
 
             </div>
         
-    </main>
+        </main>
 
 
 

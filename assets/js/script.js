@@ -34,11 +34,11 @@ function setupPage () {
 
     saveLocally("searchedCities", retrieveLocal("searchedCities") || ["Atlanta", "Denver", "New York City", "Houston"], true);
     
-    writePreviousSearches (retrieveLocal("searchedCities"));
+    displayPreviousSearches(retrieveLocal("searchedCities"));
     fetchWeatherData(retrieveLocal("searchedCities", 0));
 }
 
-function writePreviousSearches (searchedCities) { // Populates Recent Searches to Screen
+function displayPreviousSearches(searchedCities) { // Populates Recent Searches to Screen
     removeChildNodes(document.querySelector("#recents"), 0); //removes all existing list items in order to start over
     for (let i=0; i<searchedCities.length; i++) { 
         
@@ -79,6 +79,12 @@ function fetchWeatherData (searchKey) { // Listen for search submission, return 
         .then(function (data) {
             writeWeather(data);
         })
+        .catch( function(error){
+            alert(error);
+        })
+    })
+    .catch( function(error){
+        alert(error);
     });
 }
 
@@ -121,7 +127,7 @@ function writeWeather (queryData) {
 }
 
 function refreshPage () {
-    writePreviousSearches (JSON.parse(localStorage.getItem("searchedCities")));
+    displayPreviousSearches(JSON.parse(localStorage.getItem("searchedCities")));
     fetchWeatherData($("#cityName").text());
 }
 
