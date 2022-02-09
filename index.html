@@ -15,7 +15,7 @@
         
         <header class="jumbotron bg-dark text-light m-3 d-flex nowrap align-items-center">
             <img class="rounded d-block pr-5" src="./assets/images/sun_icon.png">
-            <h1 class="display-1">Weather App</h1>
+            <h1 class="display-1 pl-3">Weather App</h1>
         </header>
         
         <!-- Main Page Content -->
@@ -56,14 +56,14 @@
                 </div>
                 
                 <!-- The Weather Forecast -->
-                <div class="col-md-9 card">
-                    <div class="row">
+                <div class="col-md-9">
+                    <div class="row border">
                         <div class="col-12">
                             <h2 id="reportHeader">
                                 <span id="cityName">City Name</span><span> (</span><span id="date"></span><span>)</span>
                             </h2>
                             <ul id="weather-conditions" class="list-group">
-                                <li id="weatherSummary"><img id="weatherIcon" src=""></img><figcaption></figcaption></li>
+                                <li id="weatherSummary"><img id="weatherIcon"></img><figcaption></figcaption></li>
                                 <li class="list-group-item">Temperature: <span id="temperature"></span></li>
                                 <li class="list-group-item">Wind Speed: <span id="windSpeed"></span> <span id="speedUnits">mph</span></li>
                                 <li class="list-group-item">Humidity: <span id="humidity"></span>%</li>
@@ -75,13 +75,15 @@
                         </div>
                     </div>
 
-                    <div id="five-day-forecast" class="row p-0 m-0">
-                        <div id="card-template" class="col card bg-dark text-light mr-3" style="display: none;">
+                    <br>
+
+                    <div id="five-day-forecast" class="row">
+                        <div id="card-template" class="card bg-dark text-light pr-3 pl-3" style="display: none;">
                             <div class="card-body">
-                              <h4 class="card-title">Card title</h4>
-                              <img class="card-icon">
-                              <ul class="card-attributes" style="list-style: none; padding-left: 0;">
-                              </ul>
+                                <h4 class="card-title">Card title</h4>
+                                <img class="card-icon">
+                                <ul class="card-attributes" style="list-style: none; padding-left: 0;">
+                                </ul>
                             </div>
                         </div>
                     </div>

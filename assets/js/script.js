@@ -4,20 +4,16 @@ setupPage();
 $("#searchform").on("submit", function(event){ // User submits a search
     event.preventDefault(); // Prevent page reload
     saveLocally("searchedCities", $("#searchbar").val(), false); // Before executing search, saves query to local storage
+    displayPreviousSearches(JSON.parse(localStorage.getItem("searchedCities"))); // Displays search in sidebar
     fetchWeatherData($("#searchbar").val()); // Executes user search event
 });
 
-$("#recents").on("click", "span", function(event) { // User selects city from recent search history
+$("#recents").on("click", function(event) { // User selects city from recent search history
     event.stopPropagation();
     
     fetchWeatherData(event.target.textContent);
     
     $("#cityName").text(event.target.textContent);
-});
-
-$("#recents").on("click", "li", function(event) { // User selects city from recent search history
-    event.target.remove();
-
 });
 
 $("#units-toggle").on("click", function(event){
@@ -42,19 +38,13 @@ function displayPreviousSearches(searchedCities) { // Populates Recent Searches 
     removeChildNodes(document.querySelector("#recents"), 0); //removes all existing list items in order to start over
     for (let i=0; i<searchedCities.length; i++) { 
         
-        let newCityEl = document.createElement("span");
-        let closeEl = document.createElement("li");
+        let newCityEl = document.createElement("li");
         
         newCityEl.textContent = searchedCities[i];
 
-
-        closeEl.textContent = "x";
-        closeEl.setAttribute("class", "list-group-item search-history-item");
-        closeEl.setAttribute("style", "display: flex; flex-flow: row-reverse nowrap; justify-content: space-between;");
+        newCityEl.setAttribute("class", "list-group-item search-history-item");
         
-        closeEl.appendChild(newCityEl);
-
-        $("#recents").append(closeEl);
+        $("#recents").append(newCityEl);
     }
 }
 
@@ -104,10 +94,9 @@ function writeWeather (queryData) {
     removeChildNodes(document.querySelector("#five-day-forecast"), 2);
     for (let i=1; i<6; i++){
         let forecastDayCardEl = $("#card-template").clone();
-        forecastDayCardEl.attr("style", "display: inline-block;");
+        forecastDayCardEl.attr("style", "display: inline;");
         forecastDayCardEl.find(".card-title").text(moment.unix(queryData.daily[i].dt).format("MMM Do"));
         
-        forecastDayCardEl.find(".card-attributes").append();
         let newListItemEl = document.createElement("li");
         newListItemEl.textContent = `${Math.round(queryData.daily[i].temp.day)}° ${$("#units").text()}`;
         forecastDayCardEl.find(".card-attributes").append(newListItemEl);
