@@ -84,7 +84,7 @@ function writeWeather (queryData) {
     console.log(queryData);
     
     // Write the Main Weather Card with Current Weather
-    $("#weatherIcon").attr("src", `http://openweathermap.org/img/wn/${queryData.daily[0].weather[0].icon}@2x.png`);
+    $("#weatherIcon").attr("src", `https://openweathermap.org/img/wn/${queryData.daily[0].weather[0].icon}@2x.png`);
     $("figcaption").text(queryData.daily[0].weather[0].description);
     $("#temperature").text(`${Math.round(queryData.current.temp)}° ${$("#units").text()}`);
     $("#windSpeed").text(`${queryData.current.wind_speed} `);
@@ -111,7 +111,7 @@ function writeWeather (queryData) {
         newListItemEl.textContent = `Humidity: ${queryData.daily[i].humidity}%`;
         forecastDayCardEl.find(".card-attributes").append(newListItemEl);
 
-        forecastDayCardEl.find(".card-icon").attr("src", `http://openweathermap.org/img/wn/${queryData.daily[i].weather[0].icon}@2x.png`);
+        forecastDayCardEl.find(".card-icon").attr("src", `https://openweathermap.org/img/wn/${queryData.daily[i].weather[0].icon}@2x.png`);
         
         $("#five-day-forecast").append(forecastDayCardEl);
     }
