@@ -53,7 +53,7 @@ function fetchWeatherData (searchKey) { // Listen for search submission, return 
     $("#cityName").text(searchKey); // Write the queried city name to the header
 
     // Uses the OpenWeather Geocoding API to fetch lattitude and longitude for a given city name (https://openweathermap.org/api/geocoding-api)
-    fetch(`http://api.openweathermap.org/geo/1.0/direct?q=${searchKey}&limit=1&appid=964a555e6e9097dea02c021683c83267`) 
+    fetch(`http://api.openweathermap.org/geo/1.0/direct?q=${searchKey}&limit=1&appid=f7ef9617b1438d306e6394b39f3621cd`) 
     .then(function (response) {
         return response.json();
     })
@@ -62,7 +62,7 @@ function fetchWeatherData (searchKey) { // Listen for search submission, return 
         let longitude = data[0].lon;
 
         // Uses the OpenWeather OneCall API and lattitude and longitude from the fetch above to return weather data for the searched city (https://openweathermap.org/api/one-call-api)
-        fetch(`https://api.openweathermap.org/data/2.5/onecall?units=${$("#units").val()}&lat=${lattitude}&lon=${longitude}&exclude=minutely,hourly&appid=964a555e6e9097dea02c021683c83267`)
+        fetch(`https://api.openweathermap.org/data/2.5/onecall?units=${$("#units").val()}&lat=${lattitude}&lon=${longitude}&exclude=minutely,hourly&appid=f7ef9617b1438d306e6394b39f3621cd`)
         .then(function (response) {
             return response.json();
         })
